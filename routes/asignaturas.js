@@ -1,33 +1,54 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const asignaturasRoute = require("./routes/asignaturas"); // Aquí importas la ruta
+const Asignatura = require("../models/asignatura"); // Importa el modelo Asignatura
 
-require("dotenv").config();
+const router = express.Router();
 
-const app = express();
+// Ruta para crear una nueva asignatura
+router.post("/", async (req, res) => {
+  const {
+    nombre,
+    creditos,
+    profesor,
+    descripcion,
+    horario,
+    aula,
+    prerrequisitos,
+    cupoMaximo,
+  } = req.body;
 
-// Configuración de CORS
-app.use(cors());
+  try {
+    // Crea una nueva instancia de Asignatura
+    const nuevaAsignatura = new Asignatura({
+      nombre,
+      creditos,
+      profesor,
+      descripcion,
+      horario,
+      aula,
+      prerrequisitos,
+      cupoMaximo,
+    });
 
-// Middleware
-app.use(bodyParser.json());
+    // Guarda la asignatura en la base de datos
+    await nuevaAsignatura.save();
 
-// Conectar a MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Conectado a MongoDB"))
-  .catch((error) => console.error("Error al conectar a MongoDB:", error));
-
-// Rutas
-app.use("/api/asignaturas", asignaturasRoute); // Usamos "/api/asignaturas" como prefijo de las rutas de asignaturas
-
-// Configuración del puerto
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+    // Responde con un mensaje de éxito
+    return res.status(201).json({ message: "Asignatura creada con éxito" });
+  } catch (error) {
+    console.error("Error al crear la asignatura:", error);
+    return res.status(500).json({ error: "Error al crear la asignatura" });
+  }
 });
+
+// Ruta para obtener todas las asignaturas
+router.get("/", async (req, res) => {
+  try {
+    const asignaturas = await Asignatura.find();
+    res.status(200).json(asignaturas);
+  } catch (error) {
+    console.error("Error al obtener las asignaturas:", error);
+    res.status(500).json({ error: "Error al obtener las asignaturas" });
+  }
+});
+
+module.exports = router;
