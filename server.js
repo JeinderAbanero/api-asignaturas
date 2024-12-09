@@ -21,7 +21,7 @@ app.use(cors(corsOptions)); // Usa CORS con la configuración personalizada
 app.use(bodyParser.json());
 
 // Conectar a MongoDB
-console.log("Conectando a MongoDB con URI:", process.env.MONGO_URI);
+console.log("Conectando a MongoDB con URI:", uri);
 
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
