@@ -24,7 +24,10 @@ app.use(bodyParser.json());
 console.log("Conectando a MongoDB con URI:", uri);
 
 mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(
+    "mongodb+srv://jeinderabanero:1508@eduneg.ohob0.mongodb.net/eduneg?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
   .then(() => console.log("Conectado a MongoDB"))
   .catch((error) => console.error("Error al conectar a MongoDB:", error));
 
