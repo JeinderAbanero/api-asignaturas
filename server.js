@@ -6,6 +6,7 @@ const asignaturasRoute = require("./routes/asignaturas");
 require("dotenv").config();
 
 const app = express();
+const uri = process.env.MONGO_URI;
 
 // Configuración de CORS para permitir solicitudes desde tu frontend desplegado en Vercel
 const corsOptions = {
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 console.log("Conectando a MongoDB con URI:", process.env.MONGO_URI);
 
 mongoose
-  .connect(process.env.MONGO_URI) // Elimina las opciones obsoletas
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Conectado a MongoDB"))
   .catch((error) => console.error("Error al conectar a MongoDB:", error));
 
